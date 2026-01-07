@@ -1,1 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Multas - Polícia RP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<h1>Multas - Laguna RP</h1>
+<nav>
+<a href="index.html">Início</a>
+<a href="rg.html">RG</a>
+<a href="placa.html">Placa</a>
+<a href="bo.html">Boletim</a>
+<a href="mandado.html">Mandados</a>
+<a href="multa.html">Multas</a>
+</nav>
+</header>
 
+<section>
+<form id="multaForm">
+  Nome do Usuário:<br>
+  <input type="text" name="usuario" required><br>
+  Motivo:<br>
+  <input type="text" name="motivo" required><br>
+  Valor:<br>
+  <input type="number" name="valor" required><br>
+  <button type="submit">Adicionar Multa</button>
+</form>
+
+<h3>Multas</h3>
+<table id="multaList">
+<tr><th>Usuário</th><th>Motivo</th><th>Valor</th></tr>
+</table>
+</section>
+
+<script>
+const form = document.getElementById('multaForm');
+const table = document.getElementById('multaList');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(form).entries());
+  await fetch('/multa', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  form.reset();
+  loadMultas();
+});
+
+async function loadMultas() {
+  const res = await fetch('/multa');
+  const multas = await res.json();
+  table.innerHTML = '<tr><th>Usuário</th><th>Motivo</th><th>Valor</th></tr>' +
+    multas.map(m => `<tr><td>${m.usuario}</td><td>${m.motivo}</td><td>${m.valor}</td></tr>`).join('');
+}
+
+loadMultas();
+</script>
+
+<footer>
+<p>© 2026 - Polícia Laguna RP</p>
+</footer>
+</body>
+</html>
