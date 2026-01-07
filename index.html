@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Polícia RP - Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.dashboard { display: flex; flex-wrap: wrap; gap: 20px; margin: 20px; }
+.card { background: #111; padding: 20px; border-radius: 10px; flex: 1 1 200px; min-width: 200px; text-align: center; }
+.card h2 { margin: 10px 0; color: #00aaff; }
+.card p { font-size: 20px; margin: 5px 0; }
+</style>
+</head>
+<body>
+<header>
+<h1>Polícia RP - Laguna Roleplay</h1>
+<nav>
+<a href="index.html">Dashboard</a>
+<a href="rg.html">RG</a>
+<a href="placa.html">Placa</a>
+<a href="bo.html">Boletim</a>
+<a href="mandado.html">Mandados</a>
+<a href="multa.html">Multas</a>
+</nav>
+</header>
 
+<section class="dashboard">
+  <div class="card">
+    <h2>RGs Registrados</h2>
+    <p id="rgCount">0</p>
+  </div>
+  <div class="card">
+    <h2>Boletins</h2>
+    <p id="boCount">0</p>
+  </div>
+  <div class="card">
+    <h2>Mandados Ativos</h2>
+    <p id="mandadoCount">0</p>
+  </div>
+  <div class="card">
+    <h2>Multas</h2>
+    <p id="multaCount">0</p>
+  </div>
+  <div class="card">
+    <h2>Placas Registradas</h2>
+    <p id="placaCount">0</p>
+  </div>
+</section>
+
+<script>
+async function loadCounts() {
+  const rg = await (await fetch('/rg')).json();
+  const bo = await (await fetch('/bo')).json();
+  const mandado = await (await fetch('/mandado')).json();
+  const multa = await (await fetch('/multa')).json();
+  const placa = await (await fetch('/placa')).json();
+
+  document.getElementById('rgCount').innerText = rg.length;
+  document.getElementById('boCount').innerText = bo.length;
+  document.getElementById('mandadoCount').innerText = mandado.length;
+  document.getElementById('multaCount').innerText = multa.length;
+  document.getElementById('placaCount').innerText = placa.length;
+}
+
+// Atualiza automaticamente a cada 10 segundos
+loadCounts();
+setInterval(loadCounts, 10000);
+</script>
+
+<footer>
+<p>© 2026 - Polícia Laguna RP</p>
+</footer>
+</body>
+</html>
