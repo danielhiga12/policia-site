@@ -5,10 +5,95 @@
 <title>Polícia RP - Dashboard</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.dashboard { display: flex; flex-wrap: wrap; gap: 20px; margin: 20px; }
-.card { background: #111; padding: 20px; border-radius: 10px; flex: 1 1 200px; min-width: 200px; text-align: center; }
-.card h2 { margin: 10px 0; color: #00aaff; }
-.card p { font-size: 20px; margin: 5px 0; }
+/* Estilo Dashboard RP */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b1c2d;
+  color: white;
+}
+
+header {
+  background: #0a2a43;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #00aaff;
+}
+
+nav {
+  background: #111;
+  padding: 10px;
+  text-align: center;
+}
+
+nav a {
+  color: #00aaff;
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+nav a:hover {
+  color: #ffffff;
+}
+
+section.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 30px;
+  justify-content: center;
+}
+
+.card {
+  background: linear-gradient(145deg, #0f2c4c, #051525);
+  padding: 30px;
+  border-radius: 15px;
+  width: 200px;
+  height: 150px;
+  color: #00aaff;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,170,255,0.5);
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.card p {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 10px 0 0 0;
+}
+
+.card p span {
+  margin-left: 5px;
+}
+
+footer {
+  background: #000;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+  margin-top: 20px;
+  box-shadow: 0 -4px 8px rgba(0,0,0,0.3);
+}
 </style>
 </head>
 <body>
@@ -27,44 +112,51 @@
 <section class="dashboard">
   <div class="card">
     <h2>RGs Registrados</h2>
-    <p id="rgCount">0</p>
+    <p>🆔 <span id="rgCount">0</span></p>
   </div>
   <div class="card">
     <h2>Boletins</h2>
-    <p id="boCount">0</p>
+    <p>📄 <span id="boCount">0</span></p>
   </div>
   <div class="card">
     <h2>Mandados Ativos</h2>
-    <p id="mandadoCount">0</p>
+    <p>⚖️ <span id="mandadoCount">0</span></p>
   </div>
   <div class="card">
     <h2>Multas</h2>
-    <p id="multaCount">0</p>
+    <p>💰 <span id="multaCount">0</span></p>
   </div>
   <div class="card">
     <h2>Placas Registradas</h2>
-    <p id="placaCount">0</p>
+    <p>🚗 <span id="placaCount">0</span></p>
   </div>
 </section>
 
 <script>
+// Função para buscar contagem de dados do backend
 async function loadCounts() {
-  const rg = await (await fetch('/rg')).json();
-  const bo = await (await fetch('/bo')).json();
-  const mandado = await (await fetch('/mandado')).json();
-  const multa = await (await fetch('/multa')).json();
-  const placa = await (await fetch('/placa')).json();
+  try {
+    const [rg, bo, mandado, multa, placa] = await Promise.all([
+      fetch('/rg').then(r => r.json()),
+      fetch('/bo').then(r => r.json()),
+      fetch('/mandado').then(r => r.json()),
+      fetch('/multa').then(r => r.json()),
+      fetch('/placa').then(r => r.json())
+    ]);
 
-  document.getElementById('rgCount').innerText = rg.length;
-  document.getElementById('boCount').innerText = bo.length;
-  document.getElementById('mandadoCount').innerText = mandado.length;
-  document.getElementById('multaCount').innerText = multa.length;
-  document.getElementById('placaCount').innerText = placa.length;
+    document.getElementById('rgCount').innerText = rg.length;
+    document.getElementById('boCount').innerText = bo.length;
+    document.getElementById('mandadoCount').innerText = mandado.length;
+    document.getElementById('multaCount').innerText = multa.length;
+    document.getElementById('placaCount').innerText = placa.length;
+  } catch(err) {
+    console.error("Erro ao carregar contagens:", err);
+  }
 }
 
-// Atualiza automaticamente a cada 10 segundos
+// Atualiza a cada 5 segundos para refletir novas entradas
 loadCounts();
-setInterval(loadCounts, 10000);
+setInterval(loadCounts, 5000);
 </script>
 
 <footer>
