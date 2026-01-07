@@ -1,1 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Mandados - Polícia RP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<h1>Mandados - Laguna RP</h1>
+<nav>
+<a href="index.html">Início</a>
+<a href="rg.html">RG</a>
+<a href="placa.html">Placa</a>
+<a href="bo.html">Boletim</a>
+<a href="mandado.html">Mandados</a>
+<a href="multa.html">Multas</a>
+</nav>
+</header>
 
+<section>
+<form id="mandadoForm">
+  Nome do Suspeito:<br>
+  <input type="text" name="suspeito" required><br>
+  Motivo:<br>
+  <input type="text" name="motivo" required><br>
+  Validade:<br>
+  <input type="date" name="validade"><br>
+  <button type="submit">Adicionar Mandado</button>
+</form>
+
+<h3>Mandados Ativos</h3>
+<table id="mandadoList">
+<tr><th>Suspeito</th><th>Motivo</th><th>Validade</th></tr>
+</table>
+</section>
+
+<script>
+const form = document.getElementById('mandadoForm');
+const table = document.getElementById('mandadoList');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(form).entries());
+  await fetch('/mandado', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  form.reset();
+  loadMandados();
+});
+
+async function loadMandados() {
+  const res = await fetch('/mandado');
+  const mandados = await res.json();
+  table.innerHTML = '<tr><th>Suspeito</th><th>Motivo</th><th>Validade</th></tr>' +
+    mandados.map(m => `<tr><td>${m.suspeito}</td><td>${m.motivo}</td><td>${m.validade || ""}</td></tr>`).join('');
+}
+
+loadMandados();
+</script>
+
+<footer>
+<p>© 2026 - Polícia Laguna RP</p>
+</footer>
+</body>
+</html>
