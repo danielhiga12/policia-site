@@ -1,1 +1,16 @@
-
+{
+  "name": "policia-site",
+  "version": "1.0.0",
+  "description": "Site da Polícia RP - Laguna Roleplay",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "SeuNome",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5"
+  }
+}
