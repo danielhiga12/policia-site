@@ -1,1 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Consultar Placa - Polícia RP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<h1>Consulta de Placa - Laguna RP</h1>
+<nav>
+<a href="index.html">Início</a>
+<a href="rg.html">RG</a>
+<a href="placa.html">Placa</a>
+<a href="bo.html">Boletim</a>
+<a href="mandado.html">Mandados</a>
+<a href="multa.html">Multas</a>
+</nav>
+</header>
 
+<section>
+<form id="placaForm">
+  Placa:<br>
+  <input type="text" name="placa" required><br>
+  Proprietário:<br>
+  <input type="text" name="proprietario" required><br>
+  Veículo:<br>
+  <input type="text" name="veiculo" required><br>
+  <button type="submit">Registrar</button>
+</form>
+
+<h3>Placas Registradas</h3>
+<table id="placaList">
+<tr><th>Placa</th><th>Proprietário</th><th>Veículo</th></tr>
+</table>
+</section>
+
+<script>
+const form = document.getElementById('placaForm');
+const table = document.getElementById('placaList');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(form).entries());
+  await fetch('/placa', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  form.reset();
+  loadPlacas();
+});
+
+async function loadPlacas() {
+  const res = await fetch('/placa');
+  const placas = await res.json();
+  table.innerHTML = '<tr><th>Placa</th><th>Proprietário</th><th>Veículo</th></tr>' +
+    placas.map(p => `<tr><td>${p.placa}</td><td>${p.proprietario}</td><td>${p.veiculo}</td></tr>`).join('');
+}
+
+loadPlacas();
+</script>
+
+<footer>
+<p>© 2026 - Polícia Laguna RP</p>
+</footer>
+</body>
+</html>
