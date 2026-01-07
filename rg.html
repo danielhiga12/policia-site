@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Registrar RG</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2>Registrar RG</h2>
+<form id="rgForm">
+  Nome completo:<br>
+  <input type="text" name="nome" required><br>
+  CPF:<br>
+  <input type="text" name="cpf" required><br>
+  <button type="submit">Registrar</button>
+</form>
 
+<h3>Registros</h3>
+<ul id="rgList"></ul>
+
+<script>
+const form = document.getElementById('rgForm');
+const list = document.getElementById('rgList');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(form).entries());
+  await fetch('/rg', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  form.reset();
+  loadRGs();
+});
+
+async function loadRGs() {
+  const res = await fetch('/rg');
+  const rgs = await res.json();
+  list.innerHTML = rgs.map(r => `<li>${r.nome} - ${r.cpf}</li>`).join('');
+}
+
+loadRGs();
+</script>
+</body>
+</html>
