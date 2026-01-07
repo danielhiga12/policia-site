@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Boletim de Ocorrência - Polícia RP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<h1>Boletim de Ocorrência - Laguna RP</h1>
+<nav>
+<a href="index.html">Início</a>
+<a href="rg.html">RG</a>
+<a href="placa.html">Placa</a>
+<a href="bo.html">Boletim</a>
+<a href="mandado.html">Mandados</a>
+<a href="multa.html">Multas</a>
+</nav>
+</header>
 
+<section>
+<form id="boForm">
+  Nome da Vítima:<br>
+  <input type="text" name="vitima" required><br>
+  Nome do Suspeito:<br>
+  <input type="text" name="suspeito" required><br>
+  Descrição:<br>
+  <input type="text" name="descricao" required><br>
+  Status:<br>
+  <select name="status">
+    <option>Aberto</option>
+    <option>Em Investigação</option>
+    <option>Encerrado</option>
+  </select><br>
+  <button type="submit">Registrar BO</button>
+</form>
+
+<h3>Boletins</h3>
+<table id="boList">
+<tr><th>Vítima</th><th>Suspeito</th><th>Descrição</th><th>Status</th></tr>
+</table>
+</section>
+
+<script>
+const form = document.getElementById('boForm');
+const table = document.getElementById('boList');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(form).entries());
+  await fetch('/bo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  form.reset();
+  loadBO();
+});
+
+async function loadBO() {
+  const res = await fetch('/bo');
+  const bos = await res.json();
+  table.innerHTML = '<tr><th>Vítima</th><th>Suspeito</th><th>Descrição</th><th>Status</th></tr>' +
+    bos.map(b => `<tr><td>${b.vitima}</td><td>${b.suspeito}</td><td>${b.descricao}</td><td>${b.status}</td></tr>`).join('');
+}
+
+loadBO();
+</script>
+
+<footer>
+<p>© 2026 - Polícia Laguna RP</p>
+</footer>
+</body>
+</html>
